@@ -10,8 +10,10 @@ def _save_module(fx_g, args, name=None):
     print("########")
     return fx_g
 
+
 def save_module(name):
     return partial(_save_module, name=name)
+
 
 def save_graphs(fn, args):
     fw_compile = save_module("forward")

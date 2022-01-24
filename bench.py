@@ -81,7 +81,7 @@ def time_with_torch_timer(fn, args, kwargs={}):
     return fwd_latency, bwd_latency
 
 
-def time_with_manual_timer(fn, args, warmup=50, repeats=1000):
+def _time_with_manual_timer(fn, args, warmup=50, repeats=1000):
     old_args = args[:]
     ref = fn(*old_args)
     gO = torch.rand_like(ref)
@@ -120,3 +120,10 @@ def time_with_manual_timer(fn, args, warmup=50, repeats=1000):
     # print(f"Forward = {avg_fwd}")
     # print(f"Backward = {avg_bwd}")
     return avg_fwd, avg_bwd, avg_total
+
+
+def time_with_manual_timer(fn, args, warmup=50, repeats=1000, use_nvfuser=False):
+    if use_nvfuser:
+        with torch.jit.fuser("fuser2"):
+            return _time_with_manual_timer(fn, args, warmup, repeats)
+    return _time_with_manual_timer(fn, args, warmup, repeats)
