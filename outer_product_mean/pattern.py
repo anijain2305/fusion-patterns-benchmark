@@ -43,19 +43,25 @@ def f(a, b):
     return mean
 
 
+# Save the FX graphs into forward and backward directories
 debug.save_graphs(f, (a, b))
 
+# Compile the functions using different backends
 target = "cuda -libs=cudnn,cublas"
 aot_nvfuser = memory_efficient_fusion(f)
 aot_tvm = aot_function(
     f, tvm_compile(target=target), partition_fn=partition_with_recompute_fwd_in_bwd
 )
 
+# Check accuracy
+debug.check_accuracy(f, (aot_nvfuser, aot_tvm), (a, b))
+
+# Measure perf
 baseline_bench = bench.time_with_manual_timer(f, (a, b))
 aot_nvfuser_bench = bench.time_with_manual_timer(aot_nvfuser, (a, b), use_nvfuser=True)
 aot_tvm_bench = bench.time_with_manual_timer(aot_tvm, (a, b))
 
-
+# Print the latency
 t = PrettyTable(["name", "fwd", "bwd", "total"])
 t.add_row(["Eager", *baseline_bench])
 t.add_row(["AOT_NvFuser", *aot_nvfuser_bench])
