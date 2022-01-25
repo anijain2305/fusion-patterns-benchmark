@@ -100,8 +100,10 @@ def f(x, fu, fd, up, down, gain, slope, clamp):
     x = downsampling(x=x, f=fd, down=down)
     return x
 
+
 def get_function():
     return f
+
 
 def get_inputs():
     batch_size = 1
