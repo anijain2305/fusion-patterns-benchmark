@@ -4,6 +4,8 @@ from functools import partial
 
 
 def generate_tensor_str(tensor_name, tensor):
+    if not isinstance(tensor, torch.Tensor):
+        return f"{tensor_name} = {tensor}\n"
     shape = [s for s in tensor.shape]
     device = "'" + str(tensor.device).split(":")[0] + "'"
     requires_grad = str(tensor.requires_grad)
@@ -23,9 +25,7 @@ def find_input_names(fx_g):
 
 def _save_module(fx_g, args, name=None):
     assert name == "forward" or name == "backward"
-    prologue = str()
-    if name == "forward":
-        prologue = "import torch\n\n"
+    prologue = "import torch\n\n"
     code = fx_g.code
     code = "\n".join([l for l in code.split("\n") if l != ""])
 
@@ -84,10 +84,10 @@ def save_module(name):
     return partial(_save_module, name=name)
 
 
-def save_graphs(fn, args):
+def save_graphs(fn, args, static_argnums=None):
     fw_compile = save_module("forward")
     bw_compile = save_module("backward")
-    print_fn = aot_function(fn, fw_compile, bw_compile)
+    print_fn = aot_function(fn, fw_compile, bw_compile, static_argnums=static_argnums)
     print_fn(*args)
 
 
