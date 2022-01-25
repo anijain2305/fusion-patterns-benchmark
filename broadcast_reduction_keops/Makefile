@@ -1,5 +1,5 @@
 all:
-	python pattern.py
+	python main.py
 
 clean:
-	rm -rf forward backward __pycache__
+	rm -rf generated_*

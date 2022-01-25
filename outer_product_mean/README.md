@@ -18,4 +18,4 @@ python main.py
 ~~~
 
 This script with benchmark the pattern. Additionally, the forward and backward graphs will also be
-saved in forward and backward directory for further debugging.
+saved in generated forward and backward python files for further debugging.
