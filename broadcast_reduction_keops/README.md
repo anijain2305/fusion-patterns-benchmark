@@ -7,13 +7,3 @@ memory and reduce the memory bandwidth requirements.
 This pattern is observed in KeOps.
 
 TODO - Add more details about the pattern like which model, representation shapes etc
-
-
-# How to run?
-
-~~~
-python main.py
-~~~
-
-This script with benchmark the pattern. Additionally, the forward and backward graphs will also be
-saved in generated forward and backward python files for further debugging.

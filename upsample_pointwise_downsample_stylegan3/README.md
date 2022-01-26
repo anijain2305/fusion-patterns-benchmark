@@ -14,12 +14,3 @@ to generate this pattern.
 We find the representative shapes from their paper
 Input size = 512 x 512 x 32
 Filter size n = 6
-
-# How to run?
-
-~~~
-python main.py
-~~~
-
-This script with benchmark the pattern. Additionally, the forward and backward graphs will also be
-saved in generated forward and backward python files for further debugging.
