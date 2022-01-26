@@ -23,7 +23,7 @@ def find_input_names(fx_g):
     return names
 
 
-def _save_module(fx_g, args, name=None):
+def _save_module(fx_g, args, name=None, path=None):
     assert name == "forward" or name == "backward"
     prologue = "import torch\n\n"
     code = fx_g.code
@@ -73,20 +73,20 @@ def _save_module(fx_g, args, name=None):
     full_model = prologue + "\n" + code + "\n" + epilogue + "\n\n"
 
     # Write it into a file
-    with open(f"generated_{name}.py", "w") as fw:
+    with open(f"{path}/generated_{name}.py", "w") as fw:
         fw.write(full_model)
 
     print(fx_g)
     return fx_g
 
 
-def save_module(name):
-    return partial(_save_module, name=name)
+def save_module(name, path):
+    return partial(_save_module, name=name, path=path)
 
 
-def save_graphs(fn, args, static_argnums=None):
-    fw_compile = save_module("forward")
-    bw_compile = save_module("backward")
+def save_graphs(fn, args, path, static_argnums=None):
+    fw_compile = save_module("forward", path)
+    bw_compile = save_module("backward", path)
     print_fn = aot_function(fn, fw_compile, bw_compile, static_argnums=static_argnums)
     print_fn(*args)
 

@@ -6,4 +6,7 @@ all:
 	done
 
 black:
-	python -m black .
+	python -m black --exclude "generated_*" .
+
+clean:
+	find . | grep -E "(__pycache__|\.pyc)" | xargs rm -rf
