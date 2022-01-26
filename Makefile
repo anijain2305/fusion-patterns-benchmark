@@ -1,9 +1,5 @@
-SUBDIRS := $(wildcard */.)
-
 all:
-	for dir in $(SUBDIRS); do \
-		$(MAKE) -C $$dir; \
-	done
+	python main.py
 
 black:
 	python -m black --exclude "generated_*" .
