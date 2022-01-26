@@ -76,7 +76,7 @@ def _save_module(fx_g, args, name=None, path=None):
     with open(f"{path}/generated_{name}.py", "w") as fw:
         fw.write(full_model)
 
-    print(fx_g)
+    # print(fx_g)
     return fx_g
 
 

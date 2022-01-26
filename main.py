@@ -31,11 +31,13 @@ def run(pattern_name):
         # Save the FX graphs into forward and backward directories
         debug.save_graphs(f, args, path=pattern_name)
 
-        print(f(*args))
-
         # Compile the functions using different backends
         target = "cuda -libs=cudnn,cublas"
-        ts_nvfuser = torch.jit.script(f)
+        try:
+            ts_nvfuser = torch.jit.script(f)
+        except Exception as e:
+            print(f"{FAIL}Torchscript failed to script{ENDC}")
+
         aot_nvfuser = memory_efficient_fusion(f)
         aot_tvm = aot_function(
             f,
@@ -44,17 +46,31 @@ def run(pattern_name):
         )
 
         # Check accuracy
-        debug.check_accuracy(f, (ts_nvfuser, aot_nvfuser, aot_tvm), args)
+        try:
+            debug.check_accuracy(f, (ts_nvfuser, aot_nvfuser, aot_tvm), args)
+        except Exception as e:
+            print(f"{FAIL}Accuracy test failed - Please look at the error{ENDC}")
+            print(e)
 
         # Measure perf
         baseline_bench = bench.time_with_manual_timer(f, args)
-        ts_nvfuser_bench = bench.time_with_manual_timer(
-            ts_nvfuser, args, use_nvfuser=True
-        )
+        try:
+            ts_nvfuser_bench = bench.time_with_manual_timer(
+                ts_nvfuser, args, use_nvfuser=True
+            )
+        except:
+            ts_nvfuser_bench = (-1, -1, -1)
+            print(f"{FAIL}Torchscript failed to script{ENDC}")
+
         aot_nvfuser_bench = bench.time_with_manual_timer(
             aot_nvfuser, args, use_nvfuser=True
         )
-        aot_tvm_bench = bench.time_with_manual_timer(aot_tvm, args)
+        try:
+            aot_tvm_bench = bench.time_with_manual_timer(aot_tvm, args)
+        except Exception as e:
+            aot_tvm_bench = (-1, -1, -1)
+            print(f"{FAIL}TVM failed to run because of following exception{ENDC}")
+            print(e)
 
         # Print the latency
         t = PrettyTable(["name", "fwd", "bwd", "total"])

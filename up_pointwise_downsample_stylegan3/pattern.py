@@ -15,7 +15,8 @@ def upsampling(x, f, up=1, gain=1):
     f = f.to(x.dtype)
 
     # Convolve with the filter.
-    f = f[np.newaxis, np.newaxis].repeat([num_channels, 1] + [1] * f.ndim)
+    f = f.unsqueeze(0).unsqueeze(1).repeat([num_channels, 1] + [1] * f.ndim)
+    # f = f[np.newaxis, np.newaxis].repeat([num_channels, 1] + [1] * f.ndim)
     if f.ndim == 4:
         x = torch.nn.functional.conv2d(input=x, weight=f, groups=num_channels)
     else:
@@ -34,7 +35,8 @@ def downsampling(x, f, down):
     downx = downy = down
 
     # Convolve with the filter.
-    f = f[np.newaxis, np.newaxis].repeat([num_channels, 1] + [1] * f.ndim)
+    f = f.unsqueeze(0).unsqueeze(1).repeat([num_channels, 1] + [1] * f.ndim)
+    # f = f[np.newaxis, np.newaxis].repeat([num_channels, 1] + [1] * f.ndim)
     if f.ndim == 4:
         x = torch.nn.functional.conv2d(input=x, weight=f, groups=num_channels)
     else:
@@ -98,7 +100,7 @@ def f(x, fu, fd):
     up_sample_rate = 2
     down_sample_rate = 2
 
-    gain = np.sqrt(2)
+    gain = 1.414
     slope = 0.2
     clamp = 256
 
