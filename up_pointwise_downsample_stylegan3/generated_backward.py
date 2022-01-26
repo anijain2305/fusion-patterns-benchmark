@@ -38,7 +38,7 @@ def backward(view_1, unsqueeze_2, convolution, unsqueeze_3, convolution_1, mul_1
     view_2 = torch.ops.aten.view(getitem_9, [1, 32, 512, 2, 512, 2]);  getitem_9 = None
     constant_pad_nd_1 = torch.ops.aten.constant_pad_nd(view_2, [0, -1, 0, 0, 0, -1]);  view_2 = None
     view_3 = torch.ops.aten.view(constant_pad_nd_1, [1, 32, 512, 512]);  constant_pad_nd_1 = None
-    return [view_3, None, None, None, None, None, None, None]
+    return [view_3, None, None]
     
 
 res = backward(view_1, unsqueeze_2, convolution, unsqueeze_3, convolution_1, mul_1, clamp, unsqueeze_6, convolution_2, unsqueeze_7, tangents_1, _tensor_constant2, _tensor_constant1)

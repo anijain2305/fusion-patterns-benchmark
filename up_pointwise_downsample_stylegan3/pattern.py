@@ -66,7 +66,7 @@ def bias_act(x, alpha, gain, clamp):
     return x
 
 
-def f(x, fu, fd, up, down, gain, slope, clamp):
+def f(x, fu, fd):
     """
     Taken from https://github.com/NVlabs/stylegan3/blob/a5a69f58294509598714d1e88c9646c3d7c6ec94/torch_utils/ops/filtered_lrelu.py#L121
 
@@ -94,6 +94,16 @@ def f(x, fu, fd, up, down, gain, slope, clamp):
         flip_filter: False = convolution, True = correlation (default: False).
     """
 
+    # Ensure that the sample rates here are same as the one in get_inputs
+    up_sample_rate = 2
+    down_sample_rate = 2
+
+    gain = np.sqrt(2)
+    slope = 0.2
+    clamp = 256
+
+    up = up_sample_rate
+    down = down_sample_rate
     # Compute using existing ops.
     x = upsampling(x=x, f=fu, up=up, gain=up ** 2)
     x = bias_act(x=x, alpha=slope, gain=gain, clamp=clamp)  # Bias, leaky ReLU, clamp.
@@ -106,12 +116,12 @@ def get_function():
 
 
 def get_inputs():
+    up_sample_rate = 2
+    down_sample_rate = 2
     batch_size = 1
     num_channels = 32
     in_height = in_width = 512
     fir_filter_size = 6
-    up_sample_rate = 2
-    down_sample_rate = 2
     up_numtaps = fir_filter_size * up_sample_rate
     down_numtaps = fir_filter_size * down_sample_rate
     x = torch.randn(
@@ -120,8 +130,4 @@ def get_inputs():
     fu = torch.randn(up_numtaps, device="cuda", requires_grad=False)
     fd = torch.randn(down_numtaps, device="cuda", requires_grad=False)
 
-    gain = np.sqrt(2)
-    slope = 0.2
-    clamp = 256
-
-    return x, fu, fd, up_sample_rate, down_sample_rate, gain, slope, clamp
+    return x, fu, fd

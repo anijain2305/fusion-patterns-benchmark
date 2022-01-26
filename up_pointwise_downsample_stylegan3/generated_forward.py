@@ -3,15 +3,10 @@ import torch
 primals_1 = torch.empty([1, 32, 512, 512], dtype=torch.float32, device='cuda', requires_grad=True)
 primals_2 = torch.empty([12], dtype=torch.float32, device='cuda', requires_grad=False)
 primals_3 = torch.empty([12], dtype=torch.float32, device='cuda', requires_grad=False)
-primals_4 = 2
-primals_5 = 2
-primals_6 = 1.4142135623730951
-primals_7 = 0.2
-primals_8 = 256
 _tensor_constant0 = torch.empty([], dtype=torch.float64, device='cpu', requires_grad=False)
 _tensor_constant1 = torch.empty([], dtype=torch.float64, device='cpu', requires_grad=False)
 
-def forward(primals_1, primals_2, primals_3, primals_4, primals_5, primals_6, primals_7, primals_8, _tensor_constant0, _tensor_constant1):
+def forward(primals_1, primals_2, primals_3, _tensor_constant0, _tensor_constant1):
     view = torch.ops.aten.view(primals_1, [1, 32, 512, 1, 512, 1]);  primals_1 = None
     constant_pad_nd = torch.ops.aten.constant_pad_nd(view, [0, 1, 0, 0, 0, 1], 0.0);  view = None
     view_1 = torch.ops.aten.view(constant_pad_nd, [1, 32, 1024, 1024]);  constant_pad_nd = None
@@ -40,5 +35,5 @@ def forward(primals_1, primals_2, primals_3, primals_4, primals_5, primals_6, pr
     return [slice_4, view_1, unsqueeze_2, convolution, unsqueeze_3, convolution_1, mul_1, clamp, unsqueeze_6, convolution_2, unsqueeze_7]
     
 
-res = forward(primals_1, primals_2, primals_3, primals_4, primals_5, primals_6, primals_7, primals_8, _tensor_constant0, _tensor_constant1)
+res = forward(primals_1, primals_2, primals_3, _tensor_constant0, _tensor_constant1)
 

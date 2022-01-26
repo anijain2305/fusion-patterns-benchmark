@@ -31,6 +31,8 @@ def run(pattern_name):
         # Save the FX graphs into forward and backward directories
         debug.save_graphs(f, args, path=pattern_name)
 
+        print(f(*args))
+
         # Compile the functions using different backends
         target = "cuda -libs=cudnn,cublas"
         ts_nvfuser = torch.jit.script(f)
